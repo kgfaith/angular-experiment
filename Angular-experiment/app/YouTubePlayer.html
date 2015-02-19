@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+
+    <!-- build:js(.) scripts/oldieshim.js -->
+    <!--[if lt IE 9]>
+    <script src="bower_components/es5-shim/es5-shim.js"></script>
+    <script src="bower_components/json3/lib/json3.js"></script>
+    <![endif]-->
+    <!-- endbuild -->
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="../bower_components/angular-animate/angular-animate.js"></script>
+    <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="../bower_components/angular-resource/angular-resource.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../bower_components/angular-touch/angular-touch.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="../bower_components/underscore/underscore-min.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/angular-youtube-embed.js"></script>
+        <script src="scripts/controllers/youTubePlayer.js"></script>
+        <script src="scripts/directives/ytPlayer.js"></script>
+        <!-- endbuild -->
+  </head>
+<body ng-app="ytApp">
+<div class="container-fluid" ng-controller="youtubePlayerController">
+  <div class="row">
+    <div class="col-md-12">
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <h3>Playlists</h3>
+      <ul>
+        <li ng-repeat="playlist in playlistAry">
+        <span>{{playlist.name}}</span> <span class="pl-play">Play</span>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-8">
+      <yt-player playlist="currentPlaylist" custom-player="ytPlayer" ></yt-player>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</body>
+</html>
