@@ -40,9 +40,11 @@
     <!-- endbuild -->
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
         <script src="scripts/angular-youtube-embed.js"></script>
         <script src="scripts/controllers/youTubePlayer.js"></script>
         <script src="scripts/directives/ytPlayer.js"></script>
+        <script src="scripts/services/dataService.js"></script>
         <!-- endbuild -->
   </head>
 <body ng-app="ytApp">
@@ -56,13 +58,34 @@
     <div class="col-md-4">
       <h3>Playlists</h3>
       <ul>
-        <li ng-repeat="playlist in playlistAry">
+        <li ng-repeat="playlist in playlistAry" ng-click="loadPlaylist(playlist)">
         <span>{{playlist.name}}</span> <span class="pl-play">Play</span>
         </li>
       </ul>
     </div>
     <div class="col-md-8">
-      <yt-player playlist="currentPlaylist" custom-player="ytPlayer" ></yt-player>
+      <div class="row">
+        <div class="col-md-12"> <yt-player playlist="currentPlaylist" custom-player="ytPlayer" ></yt-player>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table">
+            <tr>
+              <th>#</th>
+              <th>Song</th>
+              <th>Artist</th>
+              <th></th>
+            </tr>
+            <tr ng-repeat="song in currentPlaylist.playlist">
+              <td>{{$index + 1}}</td>
+              <td>{{song.name}}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
