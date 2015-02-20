@@ -1,7 +1,10 @@
-__MACOSX/
+node_modules
+dist
+.tmp
+.sass-cache
+bower_components
 
 #Webstorm files
-[Aa]ngular-experiment/**/.idea/*.*
-[Aa]ngular-experiment/**/!.idea/watcherTasks.xml
-[Aa]ngular-experiment/**/.idea/scopes
-Angular-experiment/.idea/workspace.xml
+[Ss]rc/**/.idea/*.*
+[Ss]rc/**/!.idea/watcherTasks.xml
+[Ss]rc/**/.idea/scopes
