@@ -85,11 +85,11 @@
               <th>Artist</th>
               <th></th>
             </tr>
-            <tr ng-repeat="song in currentPlaylist.playlist">
+            <tr ng-repeat="song in currentPlaylist.playlist" show-on-hover="on-hover" >
               <td>{{$index + 1}}</td>
               <td>{{song.name}}</td>
               <td></td>
-              <td></td>
+              <td><span class="pl-play on-hover">Play</span></td>
             </tr>
           </table>
         </div>
