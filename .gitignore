@@ -1,1 +1,6 @@
 __MACOSX/
+
+#Webstorm files
+[Aa]ngular-experiment/**/.idea/*.*
+[Aa]ngular-experiment/**/!.idea/watcherTasks.xml
+[Aa]ngular-experiment/**/.idea/scopes
