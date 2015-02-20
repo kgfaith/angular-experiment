@@ -165,12 +165,24 @@ angular.module('youtube-embed', ['ng'])
           });
         }
 
+        function setupPlayerDefaults(player) {
+          player.loadAndPlayPlaylist = loadAndPlayPlaylist;
+        }
+
         function onPlayerReady(event) {
           if (scope.playerVars.customPlaylist) {
             var videoIds = getVideoIdList(scope.playerVars.customPlaylist);
             scope.player.cuePlaylist(videoIds, 0, 0, 'medium')
           }
+          setupPlayerDefaults(scope.player);
           applyBroadcast(eventPrefix + 'ready', scope.player, event);
+        }
+
+        function loadAndPlayPlaylist(playlist){
+          if(playlist && scope.player.loadPlaylist && typeof scope.player.loadPlaylist == 'function'){
+            var videoIds = getVideoIdList(playlist.playlist);
+            scope.player.loadPlaylist(videoIds, 0, 0, 'medium')
+          }
         }
 
         function createPlayer() {

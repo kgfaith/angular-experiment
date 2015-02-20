@@ -13,6 +13,7 @@
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/youtubePlayer.css">
     <!-- endbuild -->
 
     <!-- build:js(.) scripts/oldieshim.js -->
@@ -42,8 +43,15 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/angular-youtube-embed.js"></script>
-        <script src="scripts/controllers/youTubePlayer.js"></script>
+
+        <!-- controllers -->
+        <script src="scripts/controllers/youTubePlayerController.js"></script>
+
+        <!-- directives -->
         <script src="scripts/directives/ytPlayer.js"></script>
+        <script src="scripts/directives/showOnHover.js"></script>
+
+        <!-- services -->
         <script src="scripts/services/dataService.js"></script>
         <!-- endbuild -->
   </head>
@@ -58,8 +66,8 @@
     <div class="col-md-4">
       <h3>Playlists</h3>
       <ul>
-        <li ng-repeat="playlist in playlistAry" ng-click="loadPlaylist(playlist)">
-        <span>{{playlist.name}}</span> <span class="pl-play">Play</span>
+        <li ng-repeat="playlist in playlistAry" ng-click="loadPlaylist(playlist)" show-on-hover="on-hover">
+        <span>{{playlist.name}}</span> <span class="pl-play on-hover" ng-click="loadAndPlayPlaylist(playlist)">Play</span>
         </li>
       </ul>
     </div>

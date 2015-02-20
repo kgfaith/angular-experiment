@@ -9,6 +9,12 @@ angular.module('ytApp').controller('youtubePlayerController', [ '$scope', 'dataS
     $scope.currentPlaylist = $scope.playlistAry[1];
   }
 
+  $scope.loadAndPlayPlaylist = function (playlist) {
+    if($scope.ytPlayer.loadAndPlayPlaylist && typeof $scope.ytPlayer.loadAndPlayPlaylist === 'function'){
+      $scope.ytPlayer.loadAndPlayPlaylist(playlist);
+    }
+  };
+
   $scope.loadPlaylist = function(playlist){
     $scope.currentPlaylist = playlist;
   };

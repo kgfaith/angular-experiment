@@ -5,3 +5,7 @@
 .pl-col{
 	width: 70%
 }
+
+.pl-play{
+  display: none;
+}
