@@ -8,6 +8,7 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="../bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
     <!-- endbower -->
     <!-- endbuild -->
@@ -25,7 +26,8 @@
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
-    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../bower_components/angular-animate/angular-animate.js"></script>
@@ -50,6 +52,8 @@
         <!-- directives -->
         <script src="scripts/directives/ytPlayer.js"></script>
         <script src="scripts/directives/showOnHover.js"></script>
+        <script src="scripts/directives/slider.js"></script>
+        <script src="scripts/directives/hideOnHover.js"></script>
 
         <!-- services -->
         <script src="scripts/services/dataService.js"></script>
@@ -63,16 +67,24 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
       <h3>Playlists</h3>
-      <ul>
+      <ul class="nav nav-pills nav-stacked playlist-nav">
         <li ng-repeat="playlist in playlistAry" ng-click="loadPlaylist(playlist)" show-on-hover="on-hover"
-          ng-dblclick="loadAndPlayPlaylist(playlist)">
-        <span>{{playlist.name}}</span> <span class="pl-play on-hover" ng-click="loadAndPlayPlaylist(playlist)">Play</span>
+            hide-on-hover="glyphicon-music" ng-dblclick="loadAndPlayPlaylist(playlist)">
+          <a href="#">
+            <span class="glyphicon glyphicon-music" ng-if="!playlist.currentlyPlaying"></span>
+            <span ng-if="!playlist.currentlyPlaying" class="pl-play on-hover glyphicon glyphicon-play"
+                  ng-click="loadAndPlayPlaylist(playlist)"></span>
+            <span ng-if="playlist.currentlyPlaying" class="glyphicon glyphicon-pause"
+                  ng-class=""
+                  ng-click="pauseCurrentSong()"></span>
+            <span class="playlist-label">{{playlist.name}}</span>
+          </a>
         </li>
       </ul>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-9">
       <div class="row">
         <div class="col-md-12" style="background: #cccccc;"> <yt-player playlist="currentPlaylist" custom-player="ytPlayer" ></yt-player>
         </div>

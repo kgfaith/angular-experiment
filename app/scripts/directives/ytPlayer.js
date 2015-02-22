@@ -1,6 +1,6 @@
 angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
-  '$interval',
-  function ($http, youtubeEmbedUtils, $interval) {
+  '$interval', '$timeout',
+  function ($http, youtubeEmbedUtils, $interval, $timeout) {
   // from YT.PlayerState
   var stateNames = {
     'unstarted' : 'unstarted',
@@ -24,7 +24,19 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       $scope.playButtonText = 'Play';
       $scope.currentlyPlayingSongInfo = {};
       $scope.currentSong = null;
+      $scope.sliderOptions = {
+        orientation: 'horizontal',
+        min: 0,
+        max: 0,
+        range: 'min',
+        slide: refreshPlayPosition
+      };
+      $scope.sliderInfo = {
+        sliderOnOneSecondWait : false,
+        sliderPositionToChange: null
+      };
       var eventPrefix = 'youtube.player.';
+
 
       $scope.backward = function() {
         $scope.player.previousVideo();
@@ -54,13 +66,22 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
         setupVideoTimerInterval();
       });
 
+      $scope.$on(eventPrefix + 'paused', function (event, data) {
+        if($scope.currentSong){
+          $scope.currentSong.currentlyPlaying = false;
+          $scope.playlist.currentlyPlaying = false;
+        }
+      });
+
       function getCurrentVideoInfo(){
+        console.log('Invoked');
         var videoUrl = $scope.player.getVideoUrl();
         var videoId = youtubeEmbedUtils.getIdFromURL(videoUrl);
         if($scope.currentSong){
           $scope.currentSong.currentlyPlaying = false;
         }
-        var videoObj = _.find($scope.playlist.playlist, function(item){
+        var videoObj = _.find($scope.playlist.playlist, function(item, index){
+          item.videoIndex = index;
           if(item.videoId === videoId){
             item.currentlyPlaying = true;
           }else{
@@ -68,28 +89,41 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
           }
           return item.videoId === videoId;
         });
-        $scope.currentlyPlayingSongInfo = {
-          name: videoObj.name,
-          videoDuration: $scope.player.getDuration()
-        }
         $scope.currentSong = videoObj;
+        setPlayerDataForSong($scope.currentSong);
+        $scope.playlist.currentlyPlaying = true;
+      }
+
+      function setPlayerDataForSong(currentSong){
+        var songLength = $scope.player.getDuration();
+        $scope.currentlyPlayingSongInfo.name = currentSong.name;
+        $scope.currentlyPlayingSongInfo.videoDuration = songLength;
+        $scope.sliderOptions.max = songLength;
       }
 
       function setupVideoTimerInterval(){
         $scope.stopInterval = $interval(function() {
-          $scope.currentlyPlayingSongInfo.currentTime = Math.round($scope.player.getCurrentTime());
+          if(!$scope.sliderInfo.sliderOnOneSecondWait) {
+            $scope.currentlyPlayingSongInfo.currentTime = Math.round($scope.player.getCurrentTime());
+          }
         }, 500);
       }
 
-      $http.get('http://gdata.youtube.com/feeds/api/videos/by2rM3932rM?v=2&alt=json').
-        success(function(data, status, headers, config) {
-          // this callback will be called asynchronously
-          // when the response is available
-        }).
-        error(function(data, status, headers, config) {
-          // called asynchronously if an error occurs
-          // or server returns response with an error status.
-        });
+      function refreshPlayPosition(){
+        $scope.sliderInfo.sliderPositionToChange = $scope.currentlyPlayingSongInfo.currentTime;
+        if(!$scope.sliderInfo.sliderOnOneSecondWait){
+          $scope.sliderInfo.sliderOnOneSecondWait = true;
+          $timeout(function() {
+            if($scope.player){
+              $scope.currentlyPlayingSongInfo.currentTime = $scope.sliderInfo.sliderPositionToChange;
+              $scope.player.loadAndPlaySongWithStartSecond($scope.playlist, $scope.currentSong.videoIndex,
+                $scope.currentlyPlayingSongInfo.currentTime);
+            }
+            $scope.sliderInfo.sliderOnOneSecondWait = false;
+          }, 1000);
+          return;
+        }
+      }
 
       function setupCustomPlaylist(){
         $scope.playerVars = {

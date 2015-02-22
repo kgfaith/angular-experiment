@@ -77,3 +77,50 @@ body {
     border-bottom: 0;
   }
 }
+
+/*====END OF DEFAULTS====*/
+
+.playlist-nav li a {
+  /* Internet Explorer 10 */
+  display: -ms-flexbox;
+  -ms-flex-pack: left;
+  -ms-flex-align: center;
+
+  /* Firefox */
+  display: -moz-box;
+  -moz-box-pack: left;
+  -moz-box-align: center;
+
+  /* Safari, Opera, and Chrome */
+  display: -webkit-box;
+  -webkit-box-pack: left;
+  -webkit-box-align: center;
+
+  /* W3C */
+  display: box;
+  box-pack: left;
+  box-align: center;
+
+  height: 60px;
+}
+
+.playlist-label{
+  margin-left: 5px;
+  position: relative;
+  top: -4px;
+
+}
+
+.playlist-nav .glyphicon {
+  font-size: 1.2em;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+

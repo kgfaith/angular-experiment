@@ -168,6 +168,7 @@ angular.module('youtube-embed', ['ng'])
         function setupPlayerDefaults(player) {
           player.loadAndPlayPlaylist = loadAndPlayPlaylist;
           player.loadAndPlaySong = loadAndPlaySong;
+          player.loadAndPlaySongWithStartSecond = loadAndPlaySongWithStartSecond;
         }
 
         function onPlayerReady(event) {
@@ -180,16 +181,17 @@ angular.module('youtube-embed', ['ng'])
         }
 
         function loadAndPlayPlaylist(playlist){
-          if(playlist && scope.player.loadPlaylist && typeof scope.player.loadPlaylist == 'function'){
-            var videoIds = getVideoIdList(playlist.playlist);
-            scope.player.loadPlaylist(videoIds, 0, 0, 'medium');
-          }
+          loadAndPlaySong(playlist, 0);
         }
 
         function loadAndPlaySong(playlist, index){
+          loadAndPlaySongWithStartSecond(playlist, index, 0);
+        }
+
+        function loadAndPlaySongWithStartSecond(playlist, index, startSecond){
           if(playlist && scope.player.loadPlaylist && typeof scope.player.loadPlaylist == 'function'){
             var videoIds = getVideoIdList(playlist.playlist);
-            scope.player.loadPlaylist(videoIds, index, 0, 'medium');
+            scope.player.loadPlaylist(videoIds, index, startSecond, 'medium');
           }
         }
 

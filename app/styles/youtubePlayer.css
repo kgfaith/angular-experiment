@@ -1,11 +1,16 @@
-.pll-col {
-	width: 30%;
-}
-
-.pl-col{
-	width: 70%
-}
-
 .pl-play{
   display: none;
+}
+
+.nav-pills .glyphicon{
+  /*padding: 8px;*/
+  width: 30px;
+  height: 30px;
+  background: #ffff00;
+}
+
+.nav-pills .glyphicon-play,
+.nav-pills .glyphicon-pause{
+  /*border: solid 1px #333333;
+  border-radius: 17px;*/
 }

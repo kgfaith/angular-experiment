@@ -6,6 +6,14 @@
     <div><h3>{{currentlyPlayingSongInfo.name}}</h3></div>
     <div><h4>{{currentlyPlayingSongInfo.currentTime}}/</h4>
       <h4>{{currentlyPlayingSongInfo.videoDuration}}</h4></div>
+    <div><div ui-slider="sliderOptions" ng-model="currentlyPlayingSongInfo.currentTime"></div>
+      <!--ui-slider="sliderOptions"-->
+      Duration: <input ng-model="currentlyPlayingSongInfo.currentTime">
+    </div>
+    <div>
+      {{sliderInfo.sliderPositionToChange}} <br/> <br/>
+      {{sliderInfo.sliderOnOneSecondWait}}
+    </div>
   </div>
   <div class="col-md-4">
     <youtube-video id="best-vid" player-vars="playerVars" player="player"
