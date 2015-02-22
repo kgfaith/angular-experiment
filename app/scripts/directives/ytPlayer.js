@@ -22,7 +22,8 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
     },
     link: function ($scope, element, attrs) {
       $scope.playButtonText = 'Play';
-      $scope.currentlyPlayingSong = {};
+      $scope.currentlyPlayingSongInfo = {};
+      $scope.currentSong = null;
       var eventPrefix = 'youtube.player.';
 
       $scope.backward = function() {
@@ -56,18 +57,27 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       function getCurrentVideoInfo(){
         var videoUrl = $scope.player.getVideoUrl();
         var videoId = youtubeEmbedUtils.getIdFromURL(videoUrl);
+        if($scope.currentSong){
+          $scope.currentSong.currentlyPlaying = false;
+        }
         var videoObj = _.find($scope.playlist.playlist, function(item){
+          if(item.videoId === videoId){
+            item.currentlyPlaying = true;
+          }else{
+            item.currentlyPlaying = false;
+          }
           return item.videoId === videoId;
         });
-        $scope.currentlyPlayingSong = {
+        $scope.currentlyPlayingSongInfo = {
           name: videoObj.name,
           videoDuration: $scope.player.getDuration()
         }
+        $scope.currentSong = videoObj;
       }
 
       function setupVideoTimerInterval(){
         $scope.stopInterval = $interval(function() {
-          $scope.currentlyPlayingSong.currentTime = Math.round($scope.player.getCurrentTime());
+          $scope.currentlyPlayingSongInfo.currentTime = Math.round($scope.player.getCurrentTime());
         }, 500);
       }
 

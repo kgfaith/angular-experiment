@@ -66,18 +66,23 @@
     <div class="col-md-4">
       <h3>Playlists</h3>
       <ul>
-        <li ng-repeat="playlist in playlistAry" ng-click="loadPlaylist(playlist)" show-on-hover="on-hover">
+        <li ng-repeat="playlist in playlistAry" ng-click="loadPlaylist(playlist)" show-on-hover="on-hover"
+          ng-dblclick="loadAndPlayPlaylist(playlist)">
         <span>{{playlist.name}}</span> <span class="pl-play on-hover" ng-click="loadAndPlayPlaylist(playlist)">Play</span>
         </li>
       </ul>
     </div>
     <div class="col-md-8">
       <div class="row">
-        <div class="col-md-12"> <yt-player playlist="currentPlaylist" custom-player="ytPlayer" ></yt-player>
+        <div class="col-md-12" style="background: #cccccc;"> <yt-player playlist="currentPlaylist" custom-player="ytPlayer" ></yt-player>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
+          <div>
+            <h4>{{selectedPlaylist.name}}</h4>
+            <button ng-click="loadAndPlayPlaylist(selectedPlaylist)">Play</button>
+          </div>
           <table class="table">
             <tr>
               <th>#</th>
@@ -85,11 +90,11 @@
               <th>Artist</th>
               <th></th>
             </tr>
-            <tr ng-repeat="song in currentPlaylist.playlist" show-on-hover="on-hover" >
+            <tr ng-repeat="song in selectedPlaylist.playlist" show-on-hover="on-hover" >
               <td>{{$index + 1}}</td>
               <td>{{song.name}}</td>
-              <td></td>
-              <td><span class="pl-play on-hover">Play</span></td>
+              <td><span ng-if="song.currentlyPlaying">playing</span></td>
+              <td><span class="pl-play on-hover" ng-click="loadAndPlaySong(selectedPlaylist, $index)">Play</span></td>
             </tr>
           </table>
         </div>
