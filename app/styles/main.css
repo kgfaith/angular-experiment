@@ -80,7 +80,16 @@ body {
 
 /*====END OF DEFAULTS====*/
 
+body{
+  background-color: #EBEBEB;
+}
+
+.playlist-nav li a:hover {
+  background-color: #CCCCEB;
+}
+
 .playlist-nav li a {
+
   /* Internet Explorer 10 */
   display: -ms-flexbox;
   -ms-flex-pack: left;
@@ -101,7 +110,13 @@ body {
   box-pack: left;
   box-align: center;
 
+  background-color: #ffffff;
   height: 60px;
+}
+
+.playlist-nav li a:after {
+  content: ' ';
+  clear: both;
 }
 
 .playlist-label{

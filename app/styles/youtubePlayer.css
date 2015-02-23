@@ -1,16 +1,41 @@
-.pl-play{
-  display: none;
-}
-
-.nav-pills .glyphicon{
-  /*padding: 8px;*/
+.pl-btn{
+  display: block;
   width: 30px;
   height: 30px;
-  background: #ffff00;
 }
 
-.nav-pills .glyphicon-play,
-.nav-pills .glyphicon-pause{
-  /*border: solid 1px #333333;
-  border-radius: 17px;*/
+.pl-btn .glyphicon{
+  top: 6px;
+  left: 5px;
+}
+
+.nav-pills .circle-btn {
+  border: solid 1px #333333;
+  border-radius: 18px;
+}
+
+.playlist-label{
+  float: left;
+  height: 43px;
+  margin-left: 10px;
+
+  /* Internet Explorer 10 */
+  display: -ms-flexbox;
+  -ms-flex-pack: left;
+  -ms-flex-align: center;
+
+  /* Firefox */
+  display: -moz-box;
+  -moz-box-pack: left;
+  -moz-box-align: center;
+
+  /* Safari, Opera, and Chrome */
+  display: -webkit-box;
+  -webkit-box-pack: left;
+  -webkit-box-align: center;
+
+  /* W3C */
+  display: box;
+  box-pack: left;
+  box-align: center;
 }
