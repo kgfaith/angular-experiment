@@ -21,7 +21,9 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       playlist: '=?'
     },
     link: function ($scope, element, attrs) {
-      $scope.playButtonText = 'Play';
+      var currentPlaylist = {};
+      $scope.isShuffle = false;
+      $scope.isRepeat = false;
       $scope.currentlyPlayingSongInfo = {};
       $scope.currentSong = null;
       $scope.sliderOptions = {
@@ -49,16 +51,37 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       $scope.playPause = function() {
         if($scope.player.currentState == stateNames.playing){
           $scope.player.pauseVideo();
-          $scope.playButtonText = 'Pause';
         }else {
           $scope.player.playVideo();
-          $scope.playButtonText = 'Play';
+        }
+      };
+
+      $scope.toggleShuffle = function(){
+        if($scope.player){
+          $scope.player.isShuffle = !$scope.player.isShuffle;
+        }
+      };
+
+      $scope.toggleRepeat = function(){
+        if($scope.player) {
+          $scope.player.isRepeat = !$scope.player.isRepeat;
         }
       };
 
       $scope.$on(eventPrefix + 'ready', function (event, data) {
         $scope.customPlayer = $scope.player;
 
+      });
+
+      $scope.$on(eventPrefix + 'queued', function (event, data) {
+        var videoUrl = $scope.player.getVideoUrl();
+        var videoId = youtubeEmbedUtils.getIdFromURL(videoUrl);
+        var videoObj = _.find($scope.playlist.playlist, function(item, index){
+          item.videoIndex = index;
+          return item.videoId === videoId;
+        });
+        $scope.currentSong = videoObj;
+        setPlayerDataForSong($scope.currentSong);
       });
 
       $scope.$on(eventPrefix + 'playing', function (event, data) {
@@ -74,12 +97,13 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       });
 
       function getCurrentVideoInfo(){
-        console.log('Invoked');
         var videoUrl = $scope.player.getVideoUrl();
         var videoId = youtubeEmbedUtils.getIdFromURL(videoUrl);
         if($scope.currentSong){
           $scope.currentSong.currentlyPlaying = false;
         }
+        currentPlaylist.currentlyPlayed = false;
+
         var videoObj = _.find($scope.playlist.playlist, function(item, index){
           item.videoIndex = index;
           if(item.videoId === videoId){
@@ -92,11 +116,14 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
         $scope.currentSong = videoObj;
         setPlayerDataForSong($scope.currentSong);
         $scope.playlist.currentlyPlaying = true;
+        currentPlaylist = $scope.playlist;
+        currentPlaylist.currentlyPlayed = true;
       }
 
       function setPlayerDataForSong(currentSong){
         var songLength = $scope.player.getDuration();
         $scope.currentlyPlayingSongInfo.name = currentSong.name;
+        $scope.currentlyPlayingSongInfo.artistName = currentSong.artistName;
         $scope.currentlyPlayingSongInfo.videoDuration = songLength;
         $scope.sliderOptions.max = songLength;
       }
@@ -104,7 +131,9 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       function setupVideoTimerInterval(){
         $scope.stopInterval = $interval(function() {
           if(!$scope.sliderInfo.sliderOnOneSecondWait) {
-            $scope.currentlyPlayingSongInfo.currentTime = Math.round($scope.player.getCurrentTime());
+            $scope.currentlyPlayingSongInfo.currentTime = $scope.player.getCurrentTime();
+            $scope.currentlyPlayingSongInfo.DurationLeft = $scope.currentlyPlayingSongInfo.videoDuration -
+            $scope.currentlyPlayingSongInfo.currentTime;
           }
         }, 500);
       }
@@ -131,6 +160,36 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
         };
       }
       setupCustomPlaylist();
+
+      /*$scope.$watch('isShuffle', function (newValue) {
+        $scope.player.setShuffle(newValue);
+      });
+
+      $scope.$watch('isRepeat', function (newValue) {
+        $scope.player.setLoop(newValue);
+      });*/
+
+
+
+
+      String.prototype.toHHMMSS = function () {
+        var sec_num = parseInt(this, 10); // don't forget the second param
+        var hours   = Math.floor(sec_num / 3600);
+        var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+        var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+        /*if (hours   < 10) {hours   = "0"+hours;}
+        if (minutes < 10) {minutes = "0"+minutes;}*/
+        if (seconds < 10) {seconds = "0"+seconds;}
+        var time    = '';
+        if(hours < 1){
+          time = minutes+':'+seconds;
+        }else{
+          time = hours+':'+minutes+':'+seconds;
+        }
+
+        return time;
+      }
     }
   };
 }]);

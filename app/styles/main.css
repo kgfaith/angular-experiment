@@ -81,7 +81,7 @@ body {
 /*====END OF DEFAULTS====*/
 
 body{
-  background-color: #EBEBEB;
+  background-color: #ffffff;
 }
 
 .playlist-nav li a:hover {
@@ -110,7 +110,7 @@ body{
   box-pack: left;
   box-align: center;
 
-  background-color: #ffffff;
+  background-color: #EBEBEB;
   height: 60px;
 }
 
@@ -136,6 +136,37 @@ body{
 
 .show {
   display: block;
+}
+
+.clear-both-after:after {
+  content: ' ';
+  clear: both;
+}
+
+.box-center{
+  /* Internet Explorer 10 */
+  display: -ms-flexbox;
+  -ms-flex-pack: center;
+  -ms-flex-align: center;
+
+  /* Firefox */
+  display: -moz-box;
+  -moz-box-pack: center;
+  -moz-box-align: center;
+
+  /* Safari, Opera, and Chrome */
+  display: -webkit-box;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+
+  /* W3C */
+  display: box;
+  box-pack: center;
+  box-align: center;
+}
+
+.ml5 {
+  margin-left: 5px;
 }
 
 

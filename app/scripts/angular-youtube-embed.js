@@ -169,9 +169,12 @@ angular.module('youtube-embed', ['ng'])
           player.loadAndPlayPlaylist = loadAndPlayPlaylist;
           player.loadAndPlaySong = loadAndPlaySong;
           player.loadAndPlaySongWithStartSecond = loadAndPlaySongWithStartSecond;
+          player.isShuffle = false;
+          player.isRepeat = false;
         }
 
         function onPlayerReady(event) {
+          scope.player.abPlayerReady = true;
           if (scope.playerVars.customPlaylist) {
             var videoIds = getVideoIdList(scope.playerVars.customPlaylist);
             scope.player.cuePlaylist(videoIds, 0, 0, 'medium')
@@ -192,8 +195,38 @@ angular.module('youtube-embed', ['ng'])
           if(playlist && scope.player.loadPlaylist && typeof scope.player.loadPlaylist == 'function'){
             var videoIds = getVideoIdList(playlist.playlist);
             scope.player.loadPlaylist(videoIds, index, startSecond, 'medium');
+            scope.playerJustLoaded = true;
           }
         }
+
+        scope.$watch('player.isShuffle', function (newValue) {
+          if (scope.player && scope.player.setShuffle &&
+            typeof scope.player.setShuffle === 'function') {
+            scope.player.setShuffle(newValue);
+            console.log('scope.player.setShuffle(' + scope.player.isShuffle + ');');
+
+          }
+        });
+
+        scope.$watch('player.isRepeat', function (newValue) {
+          if (scope.player && scope.player.setLoop &&
+            typeof scope.player.setLoop === 'function') {
+            scope.player.setLoop(newValue);
+            console.log('scope.player.setLoop(' + scope.player.isRepeat + ');');
+
+          }
+        });
+
+        scope.$on(eventPrefix + 'playing', function (event, data) {
+          if(scope.playerJustLoaded === true) {
+            scope.playerJustLoaded = false;
+            scope.player.setShuffle(scope.player.isShuffle);
+            console.log('scope.player.setShuffle(' + scope.player.isShuffle + ');');
+            scope.player.setLoop(scope.player.isRepeat);
+            console.log('scope.player.setLoop(' + scope.player.isRepeat + ');');
+            console.log('====================');
+          }
+        });
 
         function createPlayer() {
           var player = new YT.Player(playerId, {
@@ -222,7 +255,7 @@ angular.module('youtube-embed', ['ng'])
 
         function loadPlayer() {
           if (scope.videoId || scope.playerVars.list || scope.playerVars.customPlaylist) {
-            if (scope.player && scope.player.d &&
+            if (scope.player && scope.player.destroy &&
               typeof scope.player.destroy === 'function') {
               scope.player.destroy();
             }

@@ -6,7 +6,8 @@ angular.module('ytApp').controller('youtubePlayerController', [ '$scope', 'dataS
   function getPlaylistData(){
     $scope.playlistAry = dataService.getPlaylistData();
     $scope.currentPlaylist = $scope.playlistAry[0];
-    $scope.selectedPlaylist = $scope.playlistAry[0];
+    $scope.selectedPlaylist = {};
+    $scope.loadPlaylist($scope.playlistAry[0]);
   }
 
   $scope.loadAndPlayPlaylist = function (playlist) {
@@ -29,11 +30,23 @@ angular.module('ytApp').controller('youtubePlayerController', [ '$scope', 'dataS
   };
 
   $scope.loadPlaylist = function(playlist){
+    $scope.selectedPlaylist.isSelectedPlaylist = false;
+    playlist.isSelectedPlaylist = true;
     $scope.selectedPlaylist = playlist;
   };
 
   $scope.pauseCurrentSong = function () {
     if ($scope.ytPlayer.pauseVideo && typeof $scope.ytPlayer.pauseVideo === 'function') {
+      $scope.ytPlayer.pauseVideo();
+    }
+  };
+
+  $scope.playOrPause = function(playlist) {
+    if(!playlist.currentlyPlaying && playlist.currentlyPlayed){
+      $scope.ytPlayer.playVideo();
+    }else if(!playlist.currentlyPlaying && !playlist.currentlyPlayed){
+      $scope.loadAndPlaySong(playlist, 0);
+    }else{
       $scope.ytPlayer.pauseVideo();
     }
   };
