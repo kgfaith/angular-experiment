@@ -33,6 +33,13 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
         range: 'min',
         slide: refreshPlayPosition
       };
+      $scope.volumnSliderOptions = {
+        orientation: 'horizontal',
+        min: 0,
+        max: 0,
+        range: 'min',
+        slide: changePlayerVolumn
+      };
       $scope.sliderInfo = {
         sliderOnOneSecondWait : false,
         sliderPositionToChange: null
@@ -152,6 +159,10 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
           }, 1000);
           return;
         }
+      }
+
+      function changePlayerVolumn(){
+        if(!_.isUndefined($scope.player) && $scope.player.)
       }
 
       function setupCustomPlaylist(){
