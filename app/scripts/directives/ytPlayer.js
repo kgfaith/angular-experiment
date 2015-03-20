@@ -162,7 +162,10 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       }
 
       function changePlayerVolumn(){
-        if(!_.isUndefined($scope.player) && $scope.player.)
+        if(!_.isObject($scope.player) && !_.isFunction($scope.player.setVolume)){
+          return;
+        }
+        $scope.player.setVolume($scope.player.volume)
       }
 
       function setupCustomPlaylist(){

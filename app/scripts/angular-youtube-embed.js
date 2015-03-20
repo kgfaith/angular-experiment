@@ -171,6 +171,7 @@ angular.module('youtube-embed', ['ng'])
           player.loadAndPlaySongWithStartSecond = loadAndPlaySongWithStartSecond;
           player.isShuffle = false;
           player.isRepeat = false;
+          player.volume = 50;
         }
 
         function onPlayerReady(event) {
@@ -180,6 +181,7 @@ angular.module('youtube-embed', ['ng'])
             scope.player.cuePlaylist(videoIds, 0, 0, 'medium')
           }
           setupPlayerDefaults(scope.player);
+          scope.player.setVolume(scope.player.volume);
           applyBroadcast(eventPrefix + 'ready', scope.player, event);
         }
 
