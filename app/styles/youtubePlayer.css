@@ -191,7 +191,7 @@
 }
 
 
-/* --------Slider ---------- */
+/* -------- Player progress Slider ---------- */
 
 .ab-player .slider{
   height: 30px;
@@ -264,6 +264,29 @@
   background: #299BC1;
 }
 
+/* ------- Volume Slider -------- */
+.volume-slider .ui-slider{
+  background: #B8B8B8;
+  height: 3px;
+  border: none;
+  border-radius: 0;
+}
+
+.ab-player .volume-slider .ui-state-default,
+.ab-player .volume-slider .ui-widget-content .ui-state-default{
+  background: #6E6E6E;
+  border: none;
+  border-radius: 5px;
+  height: 7px;
+  width: 7px;
+}
+
+.volume-slider .ui-slider-range.ui-widget-header{
+  background: #6E6E6E;
+}
+
+/* --------Playlist table ---------- */
+
 .playlist-table{
   font-size: small;
   margin-top: 20px;
@@ -272,4 +295,6 @@
 .playlist-table tr.playing{
   color: #299BC1;
 }
+
+
 

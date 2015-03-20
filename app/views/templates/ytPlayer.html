@@ -30,19 +30,20 @@
       </div>
       <div style="clear: both;"></div>
       <div class="player-setting-container">
-      <span class="setting-btn">
-        <span class="glyphicon glyphicon-random" ng-class="player && player.isShuffle ? 'shuffle' : ''"
-          ng-click="toggleShuffle()"></span>
-      </span>
-      <span class="setting-btn">
-        <span class="glyphicon glyphicon-retweet" ng-class="player && player.isRepeat ? 'repeat' : ''"
-          ng-click="toggleRepeat()"></span>
-      </span>
-      <span class="setting-btn clear-both-after">
-        <span class="glyphicon glyphicon-volume-up"></span>
-      </span>
+        <span class="setting-btn">
+          <span class="glyphicon glyphicon-random" ng-class="player && player.isShuffle ? 'shuffle' : ''"
+                ng-click="toggleShuffle()"></span>
+        </span>
+        <span class="setting-btn">
+          <span class="glyphicon glyphicon-retweet" ng-class="player && player.isRepeat ? 'repeat' : ''"
+                ng-click="toggleRepeat()"></span>
+        </span>
+        <span class="setting-btn clear-both-after">
+          <span class="glyphicon glyphicon-volume-up"></span>
+        </span>
       </div>
-      <div class="volumn-slider">
+      <div class="clear"></div>
+      <div class="volume-slider">
         <div ui-slider="volumnSliderOptions" ng-model="player.volume"></div>
       </div>
     </div>

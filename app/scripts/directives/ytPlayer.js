@@ -36,7 +36,7 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       $scope.volumnSliderOptions = {
         orientation: 'horizontal',
         min: 0,
-        max: 0,
+        max: 100,
         range: 'min',
         slide: changePlayerVolumn
       };
@@ -77,6 +77,7 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
 
       $scope.$on(eventPrefix + 'ready', function (event, data) {
         $scope.customPlayer = $scope.player;
+        $scope.customPlayer.volume = 50;
 
       });
 
