@@ -10,6 +10,7 @@
   <!-- bower:css -->
   <link rel="stylesheet" href="../bower_components/jquery-ui/themes/smoothness/jquery-ui.css">
   <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css"/>
+  <link rel="stylesheet" href="../bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css"/>
   <!-- endbower -->
   <!-- endbuild -->
   <!-- build:css(.tmp) styles/main.css -->
@@ -27,7 +28,7 @@
   <!-- build:js(.) scripts/vendor.js -->
   <!-- bower:js -->
   <script type="text/javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
-  <script type="text/javascript" src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+  <!--<script type="text/javascript" src="../bower_components/jquery-ui/jquery-ui.min.js"></script>-->
   <script src="../bower_components/angular/angular.js"></script>
   <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script src="../bower_components/angular-animate/angular-animate.js"></script>
@@ -39,6 +40,8 @@
   <script src="../bower_components/angular-bootstrap/ui-bootstrap.js"></script>
   <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="../bower_components/underscore/underscore-min.js"></script>
+  <script src="../bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js"></script>
+  <script src="../bower_components/angular-bootstrap-slider/slider.js"></script>
   <!-- endbower -->
   <!-- endbuild -->
 
@@ -52,13 +55,20 @@
   <!-- directives -->
   <script src="scripts/directives/ytPlayer.js"></script>
   <script src="scripts/directives/showOnHover.js"></script>
-  <script src="scripts/directives/slider.js"></script>
+  <script src="scripts/directives/showHideOutsideElement.js"></script>
   <script src="scripts/directives/hideOnHover.js"></script>
   <script src="scripts/directives/sliderHover.js"></script>
 
   <!-- services -->
   <script src="scripts/services/dataService.js"></script>
+  <script src="scripts/services/youtubeDataApiService.js"></script>
+  <script src="scripts/services/utilityService.js"></script>
   <!-- endbuild -->
+
+  <!-- external non-bower library -->
+  <script src="https://apis.google.com/js/client.js?onload=init"></script>
+
+
 </head>
 <body ng-app="ytApp">
 <div class="container-fluid" ng-controller="youtubePlayerController">
@@ -93,12 +103,20 @@
     <div class="col-md-7">
       <div class="row">
         <div class="col-md-12">
+          <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
           <div>
             <h4>{{selectedPlaylist.name}}</h4>
             <button type="button" class="btn btn-primary" ng-click="playOrPause(selectedPlaylist)">
               <span ng-class="selectedPlaylist.currentlyPlaying ? 'glyphicon-pause': 'glyphicon-play'"
                     class="glyphicon" aria-hidden="true"></span>
               {{selectedPlaylist.currentlyPlaying ? 'Pause': 'Play'}}
+            </button> &nbsp;
+            <button type="button" class="btn btn-danger btn-sm" ng-click="openAddSongModal()">
+              <span class="glyphicon glyphicon-plus-sign"></span> Add new song
             </button>
           </div>
           <table class="playlist-table table">
@@ -133,6 +151,45 @@
       <yt-player playlist="currentPlaylist" custom-player="ytPlayer"></yt-player>
     </div>
   </div>
+
+  <!-- Modal templates -->
+  <script type="text/ng-template" id="addNewSong.html">
+    <div class="modal-header">
+      <h3 ng-hide="editingSong">Add new song</h3>
+      <h3 ng-show="editingSong">Edit song</h3>
+    </div>
+    <div class="modal-body">
+
+      <form novalidate role="form" name="form">
+        <fieldset>
+          <div class="form-group">
+            <label for="youtubeUrl">Youtube url:</label>
+            <input id="youtubeUrl" type="text" required placeholder="Enter youtube url" ng-model="song.youtubeUrl" required/>
+            <button class="btn" ng-click="checkYoutubeUrl(song.youtubeUrl)">Load Url</button>
+          </div>
+          <div class="form-group">
+            <label for="songName">Song Name:</label>
+            <input id="songName" type="text" required placeholder="Enter song name" ng-model="song.songName" required/>
+          </div>
+          <div class="form-group">
+            <label for="artist">Artist:</label>
+            <input id="artist" type="text" required placeholder="Enter artist name" ng-model="song.artistName" required/>
+          </div>
+          <div class="form-group">
+            <label for="artist">Duration:</label>
+            <input id="duration" type="text" required placeholder="Enter artist name" ng-model="song.duration" required/>
+          </div>
+        </fieldset>
+      </form>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" ng-click="ok(form)">{{saveText}}</button>
+      <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+
+  </script>
+
 </div>
 
 

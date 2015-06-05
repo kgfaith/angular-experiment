@@ -205,7 +205,6 @@ angular.module('youtube-embed', ['ng'])
           if (scope.player && scope.player.setShuffle &&
             typeof scope.player.setShuffle === 'function') {
             scope.player.setShuffle(newValue);
-            console.log('scope.player.setShuffle(' + scope.player.isShuffle + ');');
 
           }
         });
@@ -214,7 +213,6 @@ angular.module('youtube-embed', ['ng'])
           if (scope.player && scope.player.setLoop &&
             typeof scope.player.setLoop === 'function') {
             scope.player.setLoop(newValue);
-            console.log('scope.player.setLoop(' + scope.player.isRepeat + ');');
 
           }
         });
@@ -223,10 +221,7 @@ angular.module('youtube-embed', ['ng'])
           if(scope.playerJustLoaded === true) {
             scope.playerJustLoaded = false;
             scope.player.setShuffle(scope.player.isShuffle);
-            console.log('scope.player.setShuffle(' + scope.player.isShuffle + ');');
             scope.player.setLoop(scope.player.isRepeat);
-            console.log('scope.player.setLoop(' + scope.player.isRepeat + ');');
-            console.log('====================');
           }
         });
 

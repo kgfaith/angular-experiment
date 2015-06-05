@@ -9,23 +9,37 @@
       <span class="song-name">{{currentlyPlayingSongInfo.name}}</span><br/>
       <span class="artist-name">{{currentlyPlayingSongInfo.artistName}}</span>
     </div>
-    <div class="slider" slider-hover>
-      <div ui-slider="sliderOptions" ng-model="currentlyPlayingSongInfo.currentTime"></div>
+    <div class="progress-slider" slider-hover>
+      <div>
+        <slider slider-id="song-progress-slider"
+                ng-model="currentlyPlayingSongInfo.currentTime"
+                min="sliderOptions.min"
+                max="sliderOptions.max"
+                range="false"
+                tooltip="hide"
+                on-start-slide="startDragging(currentlyPlayingSongInfo.currentTime)"
+                on-stop-slide="stopDragging(currentlyPlayingSongInfo.currentTime)"
+                precision="5">
+        </slider>
+      </div>
+
+      <!--<div ui-slider="sliderOptions" ng-model="currentlyPlayingSongInfo.currentTime"></div>-->
+      <!--something-->
       <span>{{currentlyPlayingSongInfo.currentTime.toString().toHHMMSS()}}</span>
       <span ng-if="currentlyPlayingSongInfo.DurationLeft">-{{currentlyPlayingSongInfo.DurationLeft.toString().toHHMMSS()}}</span>
     </div>
     <div style="clear: both;"></div>
     <div class="control-wrapper">
       <div class="control-container">
-      <span class="control-btn" ng-click="backward()">
-        <span class="glyphicon glyphicon-backward"></span>
+      <span class="control-btn">
+        <span class="glyphicon glyphicon-backward" ng-click="backward()"></span>
       </span>
       <span class="play-control-btn ml5" ng-click="playPause()">
         <span class="glyphicon" ng-class="player.currentState === 'playing'? 'glyphicon-pause' :
         'glyphicon-play'"></span>
       </span>
-      <span class="control-btn" ng-click="forward()">
-        <span class="glyphicon glyphicon-forward"></span>
+      <span class="control-btn">
+        <span class="glyphicon glyphicon-forward" ng-click="forward()"></span>
       </span>
       </div>
       <div style="clear: both;"></div>
@@ -39,13 +53,22 @@
                 ng-click="toggleRepeat()"></span>
         </span>
         <span class="setting-btn clear-both-after">
-          <span class="glyphicon glyphicon-volume-up"></span>
+          <span class="glyphicon glyphicon-volume-up" show-hide-outside-element=".volume-slider"></span>
         </span>
       </div>
       <div class="clear"></div>
       <div class="volume-slider">
-        <div ui-slider="volumnSliderOptions" ng-model="player.volume"></div>
+        <span class="glyphicon glyphicon-volume-down"></span>
+        <slider ui-slider="volumnSliderOptions" ng-model="player.volume"
+             min="volumnSliderOptions.min"
+             max="volumnSliderOptions.max"
+             range="false"
+             precision="5"
+          ></slider>
+        <span class="glyphicon glyphicon-volume-up"></span>
+
       </div>
+
     </div>
   </div>
 </div>

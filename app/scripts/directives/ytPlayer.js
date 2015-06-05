@@ -1,6 +1,6 @@
 angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
-  '$interval', '$timeout',
-  function ($http, youtubeEmbedUtils, $interval, $timeout) {
+  '$interval',
+  function ($http, youtubeEmbedUtils, $interval) {
   // from YT.PlayerState
   var stateNames = {
     'unstarted' : 'unstarted',
@@ -29,30 +29,31 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       $scope.sliderOptions = {
         orientation: 'horizontal',
         min: 0,
-        max: 0,
-        range: 'min',
-        slide: refreshPlayPosition
+        max: 0
       };
       $scope.volumnSliderOptions = {
         orientation: 'horizontal',
         min: 0,
         max: 100,
-        range: 'min',
-        slide: changePlayerVolumn
+        tooltip: 'hidden'
       };
       $scope.sliderInfo = {
         sliderOnOneSecondWait : false,
         sliderPositionToChange: null
       };
       var eventPrefix = 'youtube.player.';
-
+      var startDragging = false;
 
       $scope.backward = function() {
         $scope.player.previousVideo();
       };
 
       $scope.forward = function() {
-        $scope.player.nextVideo();
+        if($scope.playlist.reloadNeeded === true){
+          checkReloadForNewVideo($scope.playlist);
+        }else{
+          $scope.player.nextVideo();
+        }
       };
 
       $scope.playPause = function() {
@@ -104,6 +105,19 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
         }
       });
 
+      $scope.$on(eventPrefix + 'unstarted', function (event, data) {
+        checkReloadForNewVideo($scope.playlist);
+      });
+
+      function checkReloadForNewVideo(playlist){
+        if(playlist.reloadNeeded === true){
+          playlist.reloadNeeded = false;
+          if ($scope.player.loadAndPlaySong && typeof $scope.player.loadAndPlaySong === 'function') {
+            $scope.player.loadAndPlaySong(playlist, getNextSongIndex());
+          }
+        }
+      }
+
       function getCurrentVideoInfo(){
         var videoUrl = $scope.player.getVideoUrl();
         var videoId = youtubeEmbedUtils.getIdFromURL(videoUrl);
@@ -138,7 +152,7 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
 
       function setupVideoTimerInterval(){
         $scope.stopInterval = $interval(function() {
-          if(!$scope.sliderInfo.sliderOnOneSecondWait) {
+          if(!startDragging) {
             $scope.currentlyPlayingSongInfo.currentTime = $scope.player.getCurrentTime();
             $scope.currentlyPlayingSongInfo.DurationLeft = $scope.currentlyPlayingSongInfo.videoDuration -
             $scope.currentlyPlayingSongInfo.currentTime;
@@ -146,28 +160,30 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
         }, 500);
       }
 
-      function refreshPlayPosition(){
-        $scope.sliderInfo.sliderPositionToChange = $scope.currentlyPlayingSongInfo.currentTime;
-        if(!$scope.sliderInfo.sliderOnOneSecondWait){
-          $scope.sliderInfo.sliderOnOneSecondWait = true;
-          $timeout(function() {
-            if($scope.player){
-              $scope.currentlyPlayingSongInfo.currentTime = $scope.sliderInfo.sliderPositionToChange;
-              $scope.player.loadAndPlaySongWithStartSecond($scope.playlist, $scope.currentSong.videoIndex,
-                $scope.currentlyPlayingSongInfo.currentTime);
-            }
-            $scope.sliderInfo.sliderOnOneSecondWait = false;
-          }, 1000);
-          return;
+      function getNextSongIndex(){
+        if($scope.player.isShuffle === true){
+          return Math.floor((Math.random() * ($scope.playlist.length - 1)) + 0);
+
+        }else{
+          return $scope.currentSong.videoIndex + 1;
         }
       }
 
-      function changePlayerVolumn(){
-        if(!_.isObject($scope.player) && !_.isFunction($scope.player.setVolume)){
+      $scope.startDragging = function(){
+        startDragging = true;
+      };
+
+      $scope.stopDragging = function(currentTime){
+        startDragging = false;
+        $scope.player.seekTo(currentTime, true);
+      };
+
+       $scope.$watch('player.volume',function(){
+        if(!_.isObject($scope.player) || !_.isFunction($scope.player.setVolume)){
           return;
         }
         $scope.player.setVolume($scope.player.volume)
-      }
+      });
 
       function setupCustomPlaylist(){
         $scope.playerVars = {
@@ -176,16 +192,11 @@ angular.module("ytApp").directive('ytPlayer',['$http', 'youtubeEmbedUtils',
       }
       setupCustomPlaylist();
 
-      /*$scope.$watch('isShuffle', function (newValue) {
-        $scope.player.setShuffle(newValue);
+      $scope.$watch('currentlyPlayingSongInfo.currentTime', function(newValue){
+        if(startDragging){
+          $scope.player.seekTo(newValue, false);
+        }
       });
-
-      $scope.$watch('isRepeat', function (newValue) {
-        $scope.player.setLoop(newValue);
-      });*/
-
-
-
 
       String.prototype.toHHMMSS = function () {
         var sec_num = parseInt(this, 10); // don't forget the second param
