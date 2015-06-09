@@ -179,4 +179,13 @@ body{
   clear: both;
 }
 
+/* -----------Add new song modal ------------- */
 
+.add-new-song-modal .modal-dialog{
+  width: 800px;
+}
+
+.add-new-song-modal .video-thumb img{
+  width: 280px;
+  height: 160px;
+}
