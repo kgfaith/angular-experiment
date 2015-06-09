@@ -115,13 +115,15 @@ angular.module('ytApp').controller('youtubePlayerController',
                 $scope.selectedPlaylist.playlist.push({
                     name: song.songName,
                     artistName: song.artistName,
-                    videoId: song.songId
+                    videoId: song.songId,
+					duration: song.duration
                 });
+				dataService.savePlaylistData($scope.playlistAry);
                 if (angular.equals($scope.selectedPlaylist, $scope.currentPlaylist)) {
                     $scope.currentPlaylist.reloadNeeded = true;
                 }
                 showMessageAlert({type: "success", msg: 'New song is added.'});
-                dataService.savePlaylistData($scope.playlistAry);
+
             }else{
                 showMessageAlert({type: "danger", msg: 'Error adding new song.'});
             }
