@@ -10,8 +10,8 @@ function init() {
 }
 
 'use strict';
-angular.module('ytApp', ['youtube-embed', 'ab.services', 'ab.directives',
+angular.module('ytApp', ['youtube-embed', 'ab.services', 'ab.directives', 'ab.settings',
 'ngAnimate', 'ui.bootstrap-slider', 'ui.bootstrap']);
-//'ui.slider',
 angular.module('ab.services', []);
 angular.module('ab.directives', []);
+angular.module('ab.settings', []);

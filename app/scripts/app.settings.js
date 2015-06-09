@@ -4,7 +4,7 @@ var constants = angular.module('ab.settings', []);
 
 var appSettings = {
     localStorageKey: {
-        playList: 'ab.something.playlist'
+        playlist: 'ab.something.playlist'
     }
 };
 

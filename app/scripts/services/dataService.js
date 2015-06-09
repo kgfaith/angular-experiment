@@ -1,62 +1,76 @@
 'use strict';
 
-angular.module("ab.services").factory('dataService', ['LocalStorageFactory', 'appSettings',
-  function (LocalStorageFactory, appSettings) {
+angular.module("ab.services").factory('dataService', ['localStorageService', 'appSettings',
+    function (LocalStorageFactory, appSettings) {
+        function isFirstTimeUser() {
+            var ftuValue = LocalStorageFactory.load(appSettings.localStorageKey.playlist);
 
-    return {
-      getPlaylistData: function () {
+            return _.isUndefined(ftuValue) || _.isNull(ftuValue);
+        }
 
-        return getFakePlaylists();
-      }
-    };
+        return {
+            getPlaylistData: function () {
+                if (isFirstTimeUser()){
+                    var fakePlaylist = getFakePlaylists();
+                    this.savePlaylistData(fakePlaylist);
+                    return fakePlaylist;
+                }
+                return LocalStorageFactory.load(appSettings.localStorageKey.playlist);
+            },
+            savePlaylistData: function(playlistData){
+                LocalStorageFactory.save(appSettings.localStorageKey.playlist, playlistData);
+            }
+        };
 
-    function getFakePlaylists(){
-      return [{
-        name: 'Female Artists',
-        playlist: [{
-          name: 'Thiake Ma Ket Bu',
-          artistName: 'Tin Zar Maw',
-          videoId: 'W2Z3GWt8v9w'
-        },{
-          name: 'Mhar Pyan Dal',
-          artistName: 'Chan Chan',
-          videoId: '9BImfRpcsHg'
-        },{
-          name: 'Tun Eindra Bo - Live Concert - 8',
-          artistName: 'Tun Eindra Bo',
-          videoId: 'OHxgbwyoQtA'
-        },{
-          name: 'Tate Ta Khoe',
-          artistName: 'Bobby Soxer ft Ye\' Lay',
-          videoId: 'l7SPUVUPQCo'
-        }]
-      }];
-    }
-  }]);
-
+        function getFakePlaylists() {
+            return [{
+                name: 'Sample playlist',
+                playlist: [{
+                    name: 'Thiake Ma Ket Bu',
+                    artistName: 'Tin Zar Maw',
+                    videoId: 'W2Z3GWt8v9w'
+                }, {
+                    name: 'Mhar Pyan Dal',
+                    artistName: 'Chan Chan',
+                    videoId: '9BImfRpcsHg'
+                }, {
+                    name: 'Tun Eindra Bo - Live Concert - 8',
+                    artistName: 'Tun Eindra Bo',
+                    videoId: 'OHxgbwyoQtA'
+                }, {
+                    name: 'Tate Ta Khoe',
+                    artistName: 'Bobby Soxer ft Ye\' Lay',
+                    videoId: 'l7SPUVUPQCo'
+                }]
+            },{
+                name: 'Playlist 1',
+                playlist: []
+            }];
+        }
+    }]);
 
 
 /*
-{
-  name: 'Sai Sai Khan Hlaing',
-      playlist: [{
-  name: 'Yee Sar Sar',
-  artistName: 'Sai Sai Khan Hlaing',
-  videoId: 'M17x_xH7A_w'
-},{
-  name: 'Char Tate Ah Twet',
-  artistName: 'Sai Sai Kham Hlaing, Tracy Nan Kham Huam',
-  videoId: 'VBgtMk2sdWE'
-},{
-  name: 'အျပာေရာင္လမ',
-  artistName: '္းခြဲ- စိုင္းစိုင္းခမ္းလိႈင္၊ အိမ့္ခ်စ္၊ ေန၀င္း၊ ေမဂေရ႕စ္',
-  videoId: 'NAyFZuYS2Gs'
-},{
-  name: 'Pee Khae Thaw Zat Lan Ah Kyin',
-  artistName: 'Sai Sai Kham Hlaing, Tha O',
-  videoId: 'T1Af7z8ll0s'
-}]
-},
+ {
+ name: 'Sai Sai Khan Hlaing',
+ playlist: [{
+ name: 'Yee Sar Sar',
+ artistName: 'Sai Sai Khan Hlaing',
+ videoId: 'M17x_xH7A_w'
+ },{
+ name: 'Char Tate Ah Twet',
+ artistName: 'Sai Sai Kham Hlaing, Tracy Nan Kham Huam',
+ videoId: 'VBgtMk2sdWE'
+ },{
+ name: 'အျပာေရာင္လမ',
+ artistName: '္းခြဲ- စိုင္းစိုင္းခမ္းလိႈင္၊ အိမ့္ခ်စ္၊ ေန၀င္း၊ ေမဂေရ႕စ္',
+ videoId: 'NAyFZuYS2Gs'
+ },{
+ name: 'Pee Khae Thaw Zat Lan Ah Kyin',
+ artistName: 'Sai Sai Kham Hlaing, Tha O',
+ videoId: 'T1Af7z8ll0s'
+ }]
+ },
 
  {
  name: 'Favourite Pop',
@@ -139,4 +153,4 @@ angular.module("ab.services").factory('dataService', ['LocalStorageFactory', 'ap
  }]
  }
 
-*/
+ */

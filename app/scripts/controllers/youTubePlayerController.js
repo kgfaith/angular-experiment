@@ -115,6 +115,7 @@ angular.module('ytApp').controller('youtubePlayerController',
                     artistName: song.artistName,
                     videoId: song.songId
                 });
+                dataService.savePlaylistData(playlistAry);
                 if (angular.equals($scope.selectedPlaylist, $scope.currentPlaylist)) {
                     $scope.currentPlaylist.reloadNeeded = true;
                 }
@@ -144,7 +145,7 @@ var EditSongModalCtrl = function ($scope, $modalInstance, song,
             $scope.song.songName = videoData.snippet.title;
             $scope.song.duration = formatDurationInHhmmss(videoData.contentDetails.duration);
             $scope.song.videoThumbUrl = videoData.snippet.thumbnails.medium.url;
-            $scope.song.songId = videoData.snippet.songId;
+            $scope.song.songId = videoData.id;
             $scope.song.isValidSong = true;
             $scope.isUrlLoaded = true;
         }else{
