@@ -15,9 +15,11 @@ angular.module('ytApp').controller('youtubePlayerController',
 
         function getPlaylistData() {
             $scope.playlistAry = dataService.getPlaylistData();
-            $scope.currentPlaylist = $scope.playlistAry[0];
+            $scope.currentPlaylist = _.find($scope.playlistAry, function (item) {
+                return item.isSelectedPlaylist === true;
+            });
             $scope.selectedPlaylist = {};
-            $scope.loadPlaylist($scope.playlistAry[0]);
+            $scope.loadPlaylist($scope.currentPlaylist);
         }
 
         $scope.loadAndPlayPlaylist = function (playlist) {
@@ -115,11 +117,11 @@ angular.module('ytApp').controller('youtubePlayerController',
                     artistName: song.artistName,
                     videoId: song.songId
                 });
-                dataService.savePlaylistData(playlistAry);
                 if (angular.equals($scope.selectedPlaylist, $scope.currentPlaylist)) {
                     $scope.currentPlaylist.reloadNeeded = true;
                 }
                 showMessageAlert({type: "success", msg: 'New song is added.'});
+                dataService.savePlaylistData($scope.playlistAry);
             }else{
                 showMessageAlert({type: "danger", msg: 'Error adding new song.'});
             }

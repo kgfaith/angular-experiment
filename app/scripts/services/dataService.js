@@ -25,6 +25,7 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
         function getFakePlaylists() {
             return [{
                 name: 'Sample playlist',
+                isSelectedPlaylist: true,
                 playlist: [{
                     name: 'Thiake Ma Ket Bu',
                     artistName: 'Tin Zar Maw',
@@ -44,6 +45,7 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
                 }]
             },{
                 name: 'Playlist 1',
+                isSelectedPlaylist: false,
                 playlist: []
             }];
         }
