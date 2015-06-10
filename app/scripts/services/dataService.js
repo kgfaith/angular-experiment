@@ -34,6 +34,21 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
                     foundPlaylist.playlist.push(song);
                     LocalStorageFactory.save(appSettings.localStorageKey.playlist, playlistAry);
                 }
+            },
+            deleteSongFromPlaylist: function (playlistId, song, index) {
+
+            },
+            editSongFromPlaylist: function() {
+
+            },
+            addNewPlaylist: function() {
+
+            },
+            deletePlaylist: function(){
+
+            },
+            editPlaylist: function() {
+
             }
         };
 
