@@ -8,6 +8,13 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
             return _.isUndefined(ftuValue) || _.isNull(ftuValue);
         }
 
+        function findPlaylistByPlaylistId(playlistId){
+            var playlistAry = LocalStorageFactory.load(appSettings.localStorageKey.playlist);
+            return _.find(playlistAry, function(item){
+                return item.id == playlistId
+            });
+        }
+
         return {
             getPlaylistData: function () {
                 if (isFirstTimeUser()){
@@ -25,10 +32,7 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
                     return;
                 }
 
-                var playlistAry = LocalStorageFactory.load(appSettings.localStorageKey.playlist);
-                var foundPlaylist = _.find(playlistAry, function(item){
-                    return item.id == playlistId
-                });
+                var foundPlaylist = findPlaylistByPlaylistId(playlistId);
 
                 if(_.isObject(foundPlaylist)){
                     foundPlaylist.playlist.push(song);
@@ -36,7 +40,16 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
                 }
             },
             deleteSongFromPlaylist: function (playlistId, song, index) {
+                if(!_.isNumber(playlistId) || !_.isObject(song) || !_.isNumber(index) || isFirstTimeUser()) {
+                    return;
+                }
 
+                var foundPlaylist = findPlaylistByPlaylistId(playlistId);
+
+                if(_.isObject(foundPlaylist)){
+                    foundPlaylist.playlist.push(song);
+                    LocalStorageFactory.save(appSettings.localStorageKey.playlist, playlistAry);
+                }
             },
             editSongFromPlaylist: function() {
 
