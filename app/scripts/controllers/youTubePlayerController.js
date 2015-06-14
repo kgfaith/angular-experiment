@@ -2,12 +2,14 @@
 
 angular.module('ytApp').controller('youtubePlayerController',
     ['$scope', 'dataService', '$modal', 'youtubeEmbedUtils',
-    'youtubeDataApiService', 'utilityService',
-    function ($scope, dataService, $modal, youtubeEmbedUtils,
-              youtubeDataApiService, utilityService) {
+    'youtubeDataApiService', 'utilityService', '$window',
+    function ($scope, dataService, $modal, youtubeEmbedUtils, youtubeDataApiService,
+              utilityService, $window) {
 
         $scope.playlistAry = [];
         $scope.alerts = [];
+
+        $scope.isOpenNewPlaylistForm = false;
 
         $scope.closeAlert = function (index) {
             $scope.alerts.splice(index, 1);
@@ -94,6 +96,140 @@ angular.module('ytApp').controller('youtubePlayerController',
             });
         };
 
+        $scope.openEditSongModal = function (song) {
+            var modalInstance = $modal.open({
+                templateUrl: 'addNewSong.html',
+                controller: EditSongModalCtrl,
+                windowClass: 'add-new-song-modal',
+                resolve: {
+                    song: function () {
+                        return song;
+                    },
+                    editingSong: function () {
+                        return true;
+                    },
+                    youtubeEmbedUtils: function () {
+                        return youtubeEmbedUtils;
+                    },
+                    youtubeDataApiService: function () {
+                        return youtubeDataApiService;
+                    },
+                    utilityService: function () {
+                        return utilityService;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (song) {
+                editSong(song);
+            }, function () {
+                //cancel click handler
+            });
+        };
+
+        $scope.openEditPlaylistModal = function (selectedPlaylist) {
+            var playlistToEdit = angular.copy(selectedPlaylist);
+            var modalInstance = $modal.open({
+                templateUrl: 'editPlaylist.html',
+                controller: EditPlaylistModalCtrl,
+                resolve: {
+                    playlist: function () {
+                        return playlistToEdit;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (playlist) {
+                editPlaylist(playlist);
+            }, function () {
+                //cancel click handler
+            });
+        };
+
+        $scope.openNewPlaylistForm = function(){
+            $scope.isOpenNewPlaylistForm = true;
+        };
+
+        $scope.resetPlaylistForm = function(){
+            $scope.isOpenNewPlaylistForm = false;
+            $scope.newPlaylistName = '';
+        };
+
+        $scope.addNewPlaylist = function (newPlaylistName){
+            if(_.isUndefined($scope.playlistAry) || !_.isArray($scope.playlistAry) ||
+                _.isUndefined(newPlaylistName) || !_.isString(newPlaylistName)){
+                return;
+            }
+            var newPlaylist = {
+                playlistId: $scope.playlistAry.length + 1,
+                name: newPlaylistName,
+                isSelectedPlaylist: false,
+                playlist: []
+            };
+            $scope.playlistAry.push(newPlaylist);
+            dataService.addNewPlaylist(newPlaylist);
+            $scope.loadPlaylist($scope.playlistAry[$scope.playlistAry.length -1]);
+            $scope.resetPlaylistForm();
+        };
+
+        $scope.deletePlaylist = function(playlist) {
+            if (!$window.confirm('Are you sure to delete this playlist')) {
+                return;
+            }
+
+            var foundIndex = utilityService.findIndex($scope.playlistAry, function(item){
+                return item.playlistId == playlist.playlistId;
+            });
+            $scope.playlistAry.splice(foundIndex, 1);
+            dataService.deletePlaylist(playlist);
+
+            if(foundIndex > 0){
+                $scope.loadPlaylist($scope.playlistAry[foundIndex -1]);
+            }
+        };
+
+        $scope.isPlaylistEmpty = function(playlist){
+            return _.isUndefined(playlist) || _.isUndefined(playlist.playlist) || !_.isArray(playlist.playlist)
+                || playlist.playlist.length == 0;
+        };
+
+        $scope.deleteSongFromPlaylist = function(selectedPlaylist, song, index){
+            if(selectedPlaylist.playlist[index].videoId == song.videoId){
+                selectedPlaylist.playlist.splice(index, 1);
+                dataService.deleteSongFromPlaylist(selectedPlaylist.playlistId, song, index);
+                if (angular.equals($scope.selectedPlaylist, $scope.currentPlaylist)) {
+                    $scope.currentPlaylist.reloadNeeded = true;
+                }
+            }
+        };
+
+        function editSong(song){
+            if(_.isUndefined(song) || !_.isObject(song)){
+                return;
+            }
+
+            _.each($scope.playlistAry, function(item){
+                var foundIndex = utilityService.findIndex(item.playlist, function(playlistSong){
+                    return playlistSong.videoId == song.videoId;
+                });
+                if(foundIndex != -1){
+                    item.playlist[foundIndex] = angular.copy(song);
+                }
+            });
+            dataService.editSongFromPlaylist(song);
+        }
+
+        function editPlaylist(playlist){
+            if(_.isUndefined(playlist) || !_.isObject(playlist)){
+                return;
+            }
+            var foundPlaylist = _.find($scope.playlistAry, function(item){
+                return item.playlistId == playlist.playlistId;
+            });
+            foundPlaylist.name = playlist.name;
+            dataService.editPlaylistName(playlist);
+        }
+
         function updateCurrentPlaylistStatus(newPlaylist) {
             if ($scope.currentPlaylist) {
                 $scope.currentPlaylist.currentlyPlaying = false;
@@ -113,13 +249,14 @@ angular.module('ytApp').controller('youtubePlayerController',
         function addNewSong(song) {
             if (song.isValidSong === true && _.isObject($scope.currentPlaylist)) {
                 var newSong = {
-                    name: song.songName,
+                    name: song.name,
                     artistName: song.artistName,
-                    videoId: song.songId,
-                    duration: song.duration
+                    videoId: song.videoId,
+                    duration: song.duration,
+                    videoThumbUrl: song.videoThumbUrl
                 };
                 $scope.selectedPlaylist.playlist.push(newSong);
-				dataService.addSongToPlaylist($scope.selectedPlaylist.id, newSong);
+				dataService.addSongToPlaylist($scope.selectedPlaylist.playlistId, newSong);
                 if (angular.equals($scope.selectedPlaylist, $scope.currentPlaylist)) {
                     $scope.currentPlaylist.reloadNeeded = true;
                 }
@@ -138,8 +275,15 @@ var EditSongModalCtrl = function ($scope, $modalInstance, song,
 
     $scope.editingSong = editingSong;
     $scope.saveText = editingSong ? 'Edit' : 'Add New';
-    $scope.ok = function (userForm) {
-        if (userForm.$valid) {
+    if($scope.editingSong){
+        $scope.song = angular.copy(song);
+        $scope.isUrlLoaded = true;
+    }else{
+        $scope.song = {};
+    }
+
+    $scope.ok = function (form) {
+        if (form.$valid) {
             $modalInstance.close($scope.song);
         }
     };
@@ -147,10 +291,10 @@ var EditSongModalCtrl = function ($scope, $modalInstance, song,
     function loadVideoDetailIntoForm(result) {
         if (_.isObject(result) && _.isObject(result.pageInfo) && result.pageInfo.totalResults == 1) {
             var videoData = result.items[0];
-            $scope.song.songName = videoData.snippet.title;
+            $scope.song.name = videoData.snippet.title;
             $scope.song.duration = formatDurationInHhmmss(videoData.contentDetails.duration);
             $scope.song.videoThumbUrl = videoData.snippet.thumbnails.medium.url;
-            $scope.song.songId = videoData.id;
+            $scope.song.videoId = videoData.id;
             $scope.song.isValidSong = true;
             $scope.isUrlLoaded = true;
         }else{
@@ -168,9 +312,25 @@ var EditSongModalCtrl = function ($scope, $modalInstance, song,
     }
 
     $scope.checkYoutubeUrl = function (url) {
-        var songId = youtubeEmbedUtils.getIdFromURL(url);
-        var promise = youtubeDataApiService.getVideoDataById(songId);
+        var videoId = youtubeEmbedUtils.getIdFromURL(url);
+        var promise = youtubeDataApiService.getVideoDataById(videoId);
         promise.then(loadVideoDetailIntoForm, failYoutubeApiCall);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+};
+
+var EditPlaylistModalCtrl = function($scope, $modalInstance, playlist){
+    if(!_.isUndefined(playlist) && _.isObject(playlist)){
+        $scope.playlist = playlist;
+    }
+
+    $scope.ok = function (form) {
+        if (form.$valid) {
+            $modalInstance.close($scope.playlist);
+        }
     };
 
     $scope.cancel = function () {

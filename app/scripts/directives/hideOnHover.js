@@ -2,19 +2,27 @@
 
 angular.module("ab.directives").directive('hideOnHover', [function () {
 
-  return {
-    restrict: 'A',
-    link: function ($scope, element, attrs) {
+    return {
+        restrict: 'A',
+        link: function ($scope, element, attrs) {
 
-      var classNameToHide = attrs.hideOnHover;
-      var $element = $(element);
-      $element.on("mouseenter", function () {
-        $element.find('.' + classNameToHide).hide();
-      });
+            var classArray = attrs.hideOnHover.split(',');
+            var selectorSring = '';
+            _.each(classArray, function (item, index) {
+                if(index > 0){
+                    selectorSring += ',';
+                }
+                selectorSring += '.' + item;
+            });
 
-      $element.on("mouseleave", function () {
-        $element.find('.' + classNameToHide).show();
-      });
+            var $element = $(element);
+            $element.on("mouseenter", function () {
+                $element.find(selectorSring).hide();
+            });
+
+            $element.on("mouseleave", function () {
+                $element.find(selectorSring).show();
+            });
+        }
     }
-  }
 }]);

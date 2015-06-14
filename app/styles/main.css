@@ -94,7 +94,7 @@ body{
   background-color: #CCCCEB;
 }
 
-.playlist-nav li a {
+.playlist-nav li a, .playlist-nav .add-new-playlist > span {
 
   /* Internet Explorer 10 */
   display: -ms-flexbox;
@@ -171,12 +171,20 @@ body{
   box-align: center;
 }
 
+.mt10 {
+  margin-top: 10px;
+}
+
 .ml5 {
   margin-left: 5px;
 }
 
 .clear {
   clear: both;
+}
+
+.on-hover {
+  display: none;
 }
 
 /* -----------Add new song modal ------------- */
@@ -189,3 +197,22 @@ body{
   width: 280px;
   height: 160px;
 }
+
+/* ---------- Add New Playlist ------------- */
+
+.playlist-nav .add-new-playlist > span{
+  position: relative;
+  display: block;
+  padding: 15px 15px 10px;
+  border-radius: 4px;
+}
+
+.playlist-nav .add-new-playlist button.btn {
+  border-radius: 10px;
+  padding: 2px 7px 1px 5px;
+}
+
+.add-new-playlist-btn {
+  border-radius: 10px !important;
+}
+
