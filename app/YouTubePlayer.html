@@ -59,6 +59,7 @@
     <script src="scripts/directives/showHideOutsideElement.js"></script>
     <script src="scripts/directives/hideOnHover.js"></script>
     <script src="scripts/directives/sliderHover.js"></script>
+    <script src="scripts/directives/abPasteOrEnter.js"></script>
 
     <!-- services -->
     <script src="scripts/services/dataService.js"></script>
@@ -235,13 +236,9 @@
 
                         <div class="col-sm-8">
                             <input id="youtubeUrl" type="text" required placeholder="Enter youtube url"
-                                   ng-model="song.youtubeUrl"
+                                   ng-model="song.youtubeUrl" ab-paste-or-enter="checkYoutubeUrl(song.youtubeUrl)"
                                    class="form-control"/>
                         </div>
-                        <div class="col-sm-2">
-                            <button class="btn" ng-click="checkYoutubeUrl(song.youtubeUrl)">Load Url</button>
-                        </div>
-
                     </div>
                     <div class="modal-video-detail" ng-if="isUrlLoaded">
                         <div class="col-lg-7">
