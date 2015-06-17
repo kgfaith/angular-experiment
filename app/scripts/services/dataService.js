@@ -97,7 +97,7 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
                 }
             },
             editPlaylistName: function(playlist) {
-                if(_.isUndefined(playlist) || !_.isString(playlist) || isFirstTimeUser()){
+                if(_.isUndefined(playlist) || !_.isObject(playlist) || isFirstTimeUser()){
                     return;
                 }
 

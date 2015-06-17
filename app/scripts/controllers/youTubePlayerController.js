@@ -8,6 +8,8 @@ angular.module('ytApp').controller('youtubePlayerController',
 
         $scope.playlistAry = [];
         $scope.alerts = [];
+        $scope.selectedPlaylist = {};
+
 
         $scope.isOpenNewPlaylistForm = false;
 
@@ -17,10 +19,15 @@ angular.module('ytApp').controller('youtubePlayerController',
 
         function getPlaylistData() {
             $scope.playlistAry = dataService.getPlaylistData();
+            if(_.isUndefined($scope.playlistAry) || !_.isArray($scope.playlistAry) || $scope.playlistAry.length == 0){
+                return;
+            }
+
             $scope.currentPlaylist = _.find($scope.playlistAry, function (item) {
                 return item.isSelectedPlaylist === true;
             });
-            $scope.selectedPlaylist = {};
+            $scope.currentPlaylist = _.isUndefined($scope.currentPlaylist) ? $scope.playlistAry[0]
+                : $scope.currentPlaylist;
             $scope.loadPlaylist($scope.currentPlaylist);
         }
 
@@ -68,7 +75,7 @@ angular.module('ytApp').controller('youtubePlayerController',
         $scope.openAddSongModal = function () {
             var modalInstance = $modal.open({
                 templateUrl: 'addNewSong.html',
-                controller: EditSongModalCtrl,
+                controller: 'EditSongModalCtrl',
                 windowClass: 'add-new-song-modal',
                 resolve: {
                     song: function () {
@@ -99,7 +106,7 @@ angular.module('ytApp').controller('youtubePlayerController',
         $scope.openEditSongModal = function (song) {
             var modalInstance = $modal.open({
                 templateUrl: 'addNewSong.html',
-                controller: EditSongModalCtrl,
+                controller: 'EditSongModalCtrl',
                 windowClass: 'add-new-song-modal',
                 resolve: {
                     song: function () {
@@ -131,7 +138,7 @@ angular.module('ytApp').controller('youtubePlayerController',
             var playlistToEdit = angular.copy(selectedPlaylist);
             var modalInstance = $modal.open({
                 templateUrl: 'editPlaylist.html',
-                controller: EditPlaylistModalCtrl,
+                controller: 'EditPlaylistModalCtrl',
                 resolve: {
                     playlist: function () {
                         return playlistToEdit;
@@ -269,8 +276,9 @@ angular.module('ytApp').controller('youtubePlayerController',
         pageLoad();
     }]);
 
-var EditSongModalCtrl = function ($scope, $modalInstance, song,
-                                  editingSong, youtubeEmbedUtils, youtubeDataApiService, utilityService) {
+angular.module('ytApp').controller('EditSongModalCtrl',
+    ['$scope', '$modalInstance', 'song', 'editingSong', 'youtubeEmbedUtils', 'youtubeDataApiService', 'utilityService',
+        function ($scope, $modalInstance, song, editingSong, youtubeEmbedUtils, youtubeDataApiService, utilityService) {
     $scope.isUrlLoaded = false;
 
     $scope.editingSong = editingSong;
@@ -320,9 +328,12 @@ var EditSongModalCtrl = function ($scope, $modalInstance, song,
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-};
+}]);
 
-var EditPlaylistModalCtrl = function($scope, $modalInstance, playlist){
+angular.module('ytApp').controller('EditPlaylistModalCtrl',
+    ['$scope', '$modalInstance', 'playlist', function ($scope, $modalInstance, playlist) {
+
+
     if(!_.isUndefined(playlist) && _.isObject(playlist)){
         $scope.playlist = playlist;
     }
@@ -336,4 +347,4 @@ var EditPlaylistModalCtrl = function($scope, $modalInstance, playlist){
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
-};
+}]);
