@@ -222,7 +222,6 @@ angular.module('youtube-embed', ['ng'])
                         return;
                     }
                     scope.player.setVolume(newValue);
-                    console.log('before putting into service , it value is : ' + playerService.playerSetting.volume + 'AND newValue is : ' + newValue);
                     playerService.playerSetting.volume = newValue;
                     playerService.savePlayerSetting();
                 });
