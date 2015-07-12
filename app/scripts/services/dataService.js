@@ -116,21 +116,49 @@ angular.module("ab.services").factory('dataService', ['localStorageService', 'ap
                 name: 'Sample playlist',
                 isSelectedPlaylist: true,
                 playlist: [{
-                    name: 'Thiake Ma Ket Bu',
-                    artistName: 'Tin Zar Maw',
-                    videoId: 'W2Z3GWt8v9w'
+                    name: 'Frozen',
+                    artistName: 'Disney',
+                    videoId: 'L0MK7qz13bU'
                 }, {
-                    name: 'Mhar Pyan Dal',
-                    artistName: 'Chan Chan',
-                    videoId: '9BImfRpcsHg'
+                    name: 'In Summer',
+                    artistName: 'Disney',
+                    videoId: 'UFatVn1hP3o'
                 }, {
-                    name: 'Tun Eindra Bo - Live Concert - 8',
-                    artistName: 'Tun Eindra Bo',
-                    videoId: 'OHxgbwyoQtA'
+                    name: 'I See The Light',
+                    artistName: 'Disney',
+                    videoId: 'RyrYgCvxBUg'
                 }, {
-                    name: 'Tate Ta Khoe',
-                    artistName: 'Bobby Soxer ft Ye\' Lay',
-                    videoId: 'l7SPUVUPQCo'
+                    name: 'When Will My Life Begin',
+                    artistName: 'Disney',
+                    videoId: 'je4nDvNJXsg'
+                },{
+                    name: 'Under the Sea',
+                    artistName: 'Disney',
+                    videoId: 'GC_mV1IpjWA'
+                },{
+                    name: 'Bare Necessities',
+                    artistName: 'Disney',
+                    videoId: '9ogQ0uge06o'
+                },{
+                    name: 'I want to be like you',
+                    artistName: 'Disney',
+                    videoId: '9JDzlhW3XTM'
+                },{
+                    name: 'Bibbidi-Bobbidi-Boo',
+                    artistName: 'Disney',
+                    videoId: 'VNKuARjkWEg'
+                },{
+                    name: 'Go The Distance',
+                    artistName: 'Disney',
+                    videoId: 'zgnHF2CwrPs'
+                },{
+                    name: 'A Whole New World',
+                    artistName: 'Disney',
+                    videoId: '-kl4hJ4j48s'
+                },{
+                    name: 'Can You Feel The Love Tonight',
+                    artistName: 'Disney',
+                    videoId: 'aF4CWCXirZ8'
                 }]
             },{
                 playlistId: 2,

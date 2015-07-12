@@ -17,3 +17,6 @@ angular.module('ab.directives', []);
 angular.module('ab.settings', []);
 // compressJS/compressjs.sh app/scripts/*.js ahboo.min.js
 // compressJS/compressjs.sh app/scripts/**/*.js ahboo2.min.js
+/*
+<script src="ahboo.min.js"></script>
+<script src="ahboo2.min.js"></script>*/

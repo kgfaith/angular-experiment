@@ -101,8 +101,8 @@ angular.module('youtube-embed', ['ng'])
 
         return Service;
     }])
-    .directive('youtubeVideo', ['youtubeEmbedUtils', '$interval', function (youtubeEmbedUtils,
-                                                                            $interval) {
+    .directive('youtubeVideo', ['youtubeEmbedUtils', '$interval', 'playerService',
+        function (youtubeEmbedUtils, $interval, playerService) {
         var uniqId = 1;
 
         // from YT.PlayerState
@@ -169,9 +169,9 @@ angular.module('youtube-embed', ['ng'])
                     player.loadAndPlayPlaylist = loadAndPlayPlaylist;
                     player.loadAndPlaySong = loadAndPlaySong;
                     player.loadAndPlaySongWithStartSecond = loadAndPlaySongWithStartSecond;
-                    player.isShuffle = false;
-                    player.isRepeat = false;
-                    player.volume = 50;
+                    player.isShuffle = playerService.playerSetting.isShuffle;
+                    player.isRepeat = playerService.playerSetting.isRepeat;
+                    player.volume = playerService.playerSetting.volume;
                 }
 
                 function onPlayerReady(event) {
@@ -181,7 +181,6 @@ angular.module('youtube-embed', ['ng'])
                         scope.player.cuePlaylist(videoIds, 0, 0, 'medium')
                     }
                     setupPlayerDefaults(scope.player);
-                    scope.player.setVolume(scope.player.volume);
                     applyBroadcast(eventPrefix + 'ready', scope.player, event);
                 }
 
@@ -189,34 +188,43 @@ angular.module('youtube-embed', ['ng'])
                     loadAndPlaySong(playlist, 0);
                 }
 
-                function loadAndPlaySong(playlist, index, isShuffle, isRepeat) {
-                    loadAndPlaySongWithStartSecond(playlist, index, 0, isShuffle, isRepeat);
+                function loadAndPlaySong(playlist, index) {
+                    loadAndPlaySongWithStartSecond(playlist, index, 0);
                 }
 
-                function loadAndPlaySongWithStartSecond(playlist, index, startSecond, isShuffle, isRepeat) {
+                function loadAndPlaySongWithStartSecond(playlist, index, startSecond) {
                     if (playlist && scope.player.loadPlaylist && typeof scope.player.loadPlaylist == 'function') {
                         var videoIds = getVideoIdList(playlist.playlist);
                         scope.player.loadPlaylist(videoIds, index, startSecond, 'medium');
-                        scope.player.isShuffle = isShuffle;
-                        scope.player.isRepeat = isRepeat;
                         scope.playerJustLoaded = true;
                     }
                 }
 
                 scope.$watch('player.isShuffle', function (newValue) {
-                    if (scope.player && scope.player.setShuffle &&
-                        typeof scope.player.setShuffle === 'function') {
+                    if (scope.player && scope.player.setShuffle && typeof scope.player.setShuffle === 'function') {
                         scope.player.setShuffle(newValue);
-
+                        playerService.playerSetting.isShuffle = newValue;
+                        playerService.savePlayerSetting();
                     }
                 });
 
                 scope.$watch('player.isRepeat', function (newValue) {
-                    if (scope.player && scope.player.setLoop &&
-                        typeof scope.player.setLoop === 'function') {
+                    if (scope.player && scope.player.setLoop && typeof scope.player.setLoop === 'function') {
                         scope.player.setLoop(newValue);
-
+                        playerService.playerSetting.isRepeat = newValue;
+                        playerService.savePlayerSetting();
                     }
+                });
+
+                scope.$watch('player.volume', function (newValue) {
+                    if (_.isUndefined(newValue) ||  !_.isObject(scope.player) ||
+                        !_.isFunction(scope.player.setVolume)) {
+                        return;
+                    }
+                    scope.player.setVolume(newValue);
+                    console.log('before putting into service , it value is : ' + playerService.playerSetting.volume + 'AND newValue is : ' + newValue);
+                    playerService.playerSetting.volume = newValue;
+                    playerService.savePlayerSetting();
                 });
 
                 scope.$on(eventPrefix + 'playing', function (event, data) {
