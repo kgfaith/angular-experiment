@@ -10,18 +10,17 @@ angular.module("ab.directives").directive('setHeightOnPlaylistAddRemove', ['appS
 
             setElementHeight();
 
-            $scope.$on('onPlaylistAddRemove', function () {
+            $scope.$on(appSettings.events.onPlaylistAddRemove, function () {
                 setElementHeight();
             });
 
             function setElementHeight(){
-                var heightValue = $(window).height() - 20;
+                var heightValue = $(window).height() - (20 + 52);
                 $scope.style = function () {
                     return {
                         'height': heightValue + 'px'
                     };
                 };
-
             }
 
             //http://jsfiddle.net/jaredwilli/SfJ8c/

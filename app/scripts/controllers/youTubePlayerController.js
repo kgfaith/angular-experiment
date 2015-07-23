@@ -2,9 +2,9 @@
 
 angular.module('ytApp').controller('youtubePlayerController',
     ['$scope', 'dataService', '$modal', 'youtubeEmbedUtils',
-    'youtubeDataApiService', 'utilityService', '$window',
+    'youtubeDataApiService', 'utilityService', '$window', 'appSettings',
     function ($scope, dataService, $modal, youtubeEmbedUtils, youtubeDataApiService,
-              utilityService, $window) {
+              utilityService, $window, appSettings) {
 
         $scope.playlistAry = [];
         $scope.alerts = [];
@@ -268,10 +268,14 @@ angular.module('ytApp').controller('youtubePlayerController',
                     $scope.currentPlaylist.reloadNeeded = true;
                 }
                 showMessageAlert({type: "success", msg: 'New song is added.'});
-
+                triggerAddOrRemoveSongEvent();
             }else{
                 showMessageAlert({type: "danger", msg: 'Error adding new song.'});
             }
+        }
+
+        function triggerAddOrRemoveSongEvent(){
+            $scope.$emit(appSettings.events.onPlaylistAddRemove);
         }
         pageLoad();
     }]);
